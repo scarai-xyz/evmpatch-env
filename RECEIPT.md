@@ -59,7 +59,7 @@ same functions the local backend uses, so the two backends cannot drift.
 CI regrades every committed control with each task's own control runner on a GitHub-hosted
 `ubuntu-latest` runner (Linux x86_64, forge 1.7.1, solc 0.8.26 and 0.8.30) and fails unless every
 `worked_example/*/controls/*/sha256.txt` comes out byte-identical. The first such run,
-[35891561095](https://github.com/FarseenSh/evmpatch-env/actions/runs/35891561095) on commit `136944f`, reproduced every committed control hash in all four tasks.
+[35891561095](https://github.com/scarai-xyz/evmpatch-env/actions/runs/35891561095) on commit `136944f`, reproduced every committed control hash in all four tasks.
 Two controls are handled apart, by design:
 
 - `mcai_2025_01/unrecorded_rpc_truncated_state` grades on half the recorded state, so its partial
@@ -68,7 +68,7 @@ Two controls are handled apart, by design:
 - `mcai_2025_01/docker_reference` needs the `evmpatch-env:latest` image, which the runner does not
   build; its hashes equal the `local` reference grade above.
 
-The earlier run on `b557bed` ([34436918913](https://github.com/FarseenSh/evmpatch-env/actions/runs/34436918913)) had already printed the four reference
+The earlier run on `b557bed` ([34436918913](https://github.com/scarai-xyz/evmpatch-env/actions/runs/34436918913)) had already printed the four reference
 grades on the same runner type, byte-identical to the table above.
 
 ## What is hashed, and what is deliberately not

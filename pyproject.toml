@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/FarseenSh/evmpatch-env"
+Repository = "https://github.com/scarai-xyz/evmpatch-env"
 
 # Optional: only needed for the OpenEnv-native adapter (evmpatch_env/openenv_adapter.py).
 # The verifiers environment itself does not require it.
