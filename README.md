@@ -1,21 +1,35 @@
 # evmpatch-env
 
-An execution-verified RL environment for **repairing real smart-contract exploits**, built
-for Prime Intellect's [`verifiers`](https://github.com/PrimeIntellect-ai/verifiers) with an
-[OpenEnv](https://github.com/meta-pytorch/OpenEnv)-compatible adapter.
+Checks a smart-contract security fix against the real exploit.
 
-Each task is a contract that was exploited on-chain. The policy is given the verified
-source and a description of the incident, and must edit the source so that the held-out
-proof-of-concept exploit no longer succeeds, while the contract still compiles, still
-dispatches every function it dispatched before, and passes hidden functionality and
-security tests. The reward is not a model judgement: the patch is compiled and the actual
-exploit is re-run against chain state frozen at the exploit block, inside a sandbox with no
-network.
+Give it a patched contract. It compiles the patch, places it at the exploited contract's
+address on chain state frozen one block before the incident with the live storage kept,
+replays the original exploit in phases, runs hidden security and normal-use tests the
+patch author never sees, and returns one of three verdicts: `solved`, `not_solved` or
+`inconclusive`, with a grade hash anyone can recompute. No verdict is a model's opinion.
+Every one is an execution result, produced offline in a sandbox with no network.
+
+```bash
+python -m evmpatch_env.sandbox tasks/ngp_2025_09 --patch <your Token.sol> --backend local
+```
+
+Four incidents ship today (MCAI on Ethereum; NGP, GoldReserve and Bitallx on BNB Chain,
+all 2025), each with a reference fix and a set of near-miss fixes that stop the exploit and
+still fail. Their graded receipts are published at
+[scarai.xyz/receipts](https://scarai.xyz/receipts/), and the grade hashes are re-checked on
+every CI run.
+
+The same harness is an RL environment, built for Prime Intellect's
+[`verifiers`](https://github.com/PrimeIntellect-ai/verifiers) with an
+[OpenEnv](https://github.com/meta-pytorch/OpenEnv)-compatible adapter. The policy is given
+the verified source and a description of the incident, and must edit the source so that the
+held-out proof-of-concept exploit no longer succeeds, while the contract still compiles,
+still dispatches every function it dispatched before, and passes the hidden tests. The
+reward is the grade.
 
 **Version 0.3.0.** Ships as a verifiers v1 taskset (`uv run validate` green on the docker
-runtime for every task) and keeps the `load_environment` entry point. Four incidents (MCAI, NGP, GoldReserve, Bitallx; all
-2025), every task at `task_version` 2 with hidden security obligations and phased
-proof-of-concept tests. Tested on verifiers 0.3.1: 113 tests pass without Docker, 118 with
+runtime for every task) and keeps the `load_environment` entry point. Every task is at `task_version` 2 with hidden
+security obligations and phased proof-of-concept tests. Tested on verifiers 0.3.1: 113 tests pass without Docker, 118 with
 the `docker --network none` backend built. Version-2 grades reproduce byte-for-byte across
 the `local` and Docker backends, and on a second host: every CI run regrades every committed
 control on a Linux x86_64 runner and fails if a hash moves; see [`RECEIPT.md`](RECEIPT.md).
