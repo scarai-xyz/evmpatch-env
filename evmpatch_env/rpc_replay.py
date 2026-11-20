@@ -184,6 +184,10 @@ class H(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    # forge opens many connections at once. Python's default accept queue is 5, and macOS
+    # resets connections beyond it (Linux lets the client retry), which graded every run
+    # `inconclusive` on a Mac. A deep queue makes the replay proxy behave the same on both.
+    ThreadingHTTPServer.request_queue_size = 512
     srv = ThreadingHTTPServer(("127.0.0.1", PORT), H)
     bound = srv.server_address[1]
     if MISS_FILE:

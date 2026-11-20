@@ -195,7 +195,12 @@ GRADE_METRICS = (outcome_solved, outcome_not_solved, outcome_inconclusive,
 
 
 # ------------------------------------------------------------------------- the env
-class EvmPatchEnv(vf.StatefulToolEnv if _HAS_VERIFIERS else object):
+# Newer verifiers releases no longer export StatefulToolEnv at the top level. The grader
+# (`python -m evmpatch_env.sandbox`) must keep working with any verifiers version installed.
+_ENV_BASE = getattr(vf, "StatefulToolEnv", None) if _HAS_VERIFIERS else None
+
+
+class EvmPatchEnv(_ENV_BASE or object):
     """StatefulToolEnv that gives each episode an isolated working copy of the source
     and injects it into every tool call via update_tool_args."""
 
