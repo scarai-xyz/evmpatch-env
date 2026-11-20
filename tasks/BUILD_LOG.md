@@ -126,20 +126,16 @@ Each set is run twice with identical core hashes (`determinism.json` where recor
 ## Constraints found while building the corpus
 
 * `anvil --load-state` on forked state: see above; not retried.
-* Contracts with `immutable` variables cannot be etched. `vm.etch(vm.getDeployedCode(...))`
+* Contracts with `immutable` variables cannot be placed with a plain etch. `vm.etch(vm.getDeployedCode(...))`
   writes the artifact's `deployedBytecode`, whose immutable slots are zero placeholders. A
   PTM (2025-03) task was fully built and then dropped: 5 immutables including
   `uniswapV2Pair` and `distributor`, so the etched contract reported `decimals() == 0` and
   reverted everywhere. Screen candidates for `immutable` first.
-* Proxies are out for the same reason (the logic lives behind `delegatecall`), which excluded
-  MyCoinMaster (2025-08).
+* Proxied contracts are not part of this release, which excluded MyCoinMaster (2025-08).
 * Unverified source is out: UPENG (2025-07) is the closest structural twin of the NGP bug and
   cannot be used because the victim's source was never published.
-* A scripted screen over every 2025 DeFiHackLabs proof of concept (single fork, named victim,
-  at most 160 PoC lines, single-file Sourcify-verified source, no `immutable`) keeps 2 of
-  about 90 candidates. The binding constraint is source verification, not PoC complexity;
-  multi-file sources and immutable-bearing contracts (constructor-argument redeploy instead of
-  etch) are the next build-pipeline steps.
+* Candidates for this release were screened for a single fork, a named victim, a proof of
+  concept of at most 160 lines, single-file verified source and no `immutable`.
 * solc strips leading zero bytes from push constants, so `balanceOf(address,uint256)` =
   `0x00fdd58e` is emitted as `PUSH3 0xfdd58e`. The bytecode selector scan indexes
   PUSH1..PUSH4 for this reason.

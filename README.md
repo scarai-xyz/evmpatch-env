@@ -239,9 +239,9 @@ without Foundry and gate CI.
 - The etched bytecode is a recompilation of the verified source, not the deployed bytecode;
   sizes differ (for NGP, 9,364 bytes etched against 9,559 deployed), so a grade is a property
   of the task's recompiled contract, and the receipts should be read that way.
-- Contracts with `immutable` variables, proxies and unverified sources are outside the
-  current build pipeline (`tasks/BUILD_LOG.md` records the screened-out cases); verified
-  single-file sources are the binding constraint on corpus growth.
+- The four shipped tasks are single-file contracts with no proxy and no `immutable`
+  variables, placed with a plain `vm.etch`. Tasks with other contract layouts are not part
+  of this release, and contracts with unverified source cannot be used.
 - `recognised_block_reasons` are literal: a correct repair that makes the exploit fail with
   an undeclared message grades `inconclusive`, never `not_solved`, and should be triaged.
 - The recording is literal too: a correct repair that reads chain state the recording never
